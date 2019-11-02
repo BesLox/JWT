@@ -21,7 +21,6 @@ router.post('/login', (req, res) => {
     "email": postData.email,
     "name": postData.name
   }
-
   // Thực hiện việc kết nối cơ sở dữ liệu (hay tương tự) để kiểm tra thông tin username and password
   // Đăng nhập thành công, tạo mã token cho user
   const token = jwt.sign(user, config.secret, {
@@ -99,9 +98,13 @@ const TokenCheckMiddleware = async (req, res, next) => {
     // Xác thực mã token và kiểm tra thời gian hết hạn của mã
     try {
       const decoded = await utils.verifyJwtToken(token, config.secret);
-
+      const postData = req.body;
+      const user = {
+        "email": 'longdt@mpos.vn',
+        "name": 'Long'
+      }
       // Lưu thông tin giã mã được vào đối tượng req, dùng cho các xử lý ở sau
-      req.decoded = decoded;
+      req.decoded = user.email +' '+ user.name;
       next();
     } catch (err) {
       // Giải mã gặp lỗi: Không đúng, hết hạn...
