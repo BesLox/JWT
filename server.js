@@ -8,7 +8,7 @@ const tokenList = {};
 const app = express();
 
 router.get('/', (req, res) => {
-  res.send('OK');
+  res.send('Hello');
 });
 
 /**
