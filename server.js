@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const config = require('./config');
 const utils = require('./utils');
+const fs = require('fs')
 const tokenList = {};
 const app = express();
 
@@ -41,7 +42,17 @@ router.post('/login', (req, res) => {
     refreshToken,
   }
 
-  res.json(response);
+  // Lưu lại token trong keyfile.json
+  fs.open('./keyfile/keyfile.json', (err, fd)=>{
+    if(err){
+      throw 'Error open' + err
+    }
+    fs.writeFile('./keyfile/keyfile.json', `User: ${user} + Token: ${token} + RefreshToken: ${refreshToken}`,{}, (err)=>{
+      if(err) throw 'Error write' + err
+      fs.close(fd, ()=>{console.log("Write token success on keyfile.json")})
+    })
+  })
+  res.json(response)
 })
 
 /**
@@ -100,6 +111,8 @@ const TokenCheckMiddleware = async (req, res, next) => {
       const decoded = await utils.verifyJwtToken(token, config.secret);
       const postData = req.body;
       const user = {
+        // "email": 'postData.mail',
+        // "name": 'postData.name'
         "email": 'longdt@mpos.vn',
         "name": 'Long'
       }
