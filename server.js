@@ -24,7 +24,8 @@ router.post('/login', (req, res) => {
   }
   // Thực hiện việc kết nối cơ sở dữ liệu (hay tương tự) để kiểm tra thông tin username and password
   // Đăng nhập thành công, tạo mã token cho user
-  const token = jwt.sign(user, config.secret, {
+  const secret = fs.readFileSync('./keyfile.json')
+  const token = jwt.sign(user, secret, {
     expiresIn: config.tokenLife,
   });
 
@@ -43,15 +44,15 @@ router.post('/login', (req, res) => {
   }
 
   // Lưu lại token trong keyfile.json
-  fs.open('./keyfile/keyfile.json', (err, fd)=>{
-    if(err){
-      throw 'Error open' + err
-    }
-    fs.writeFile('./keyfile/keyfile.json', `User: ${user} + Token: ${token} + RefreshToken: ${refreshToken}`,{}, (err)=>{
-      if(err) throw 'Error write' + err
-      fs.close(fd, ()=>{console.log("Write token success on keyfile.json")})
-    })
-  })
+  // fs.open('./keyfile/keyfile.json', (err, fd)=>{
+  //   if(err){
+  //     throw 'Error open' + err
+  //   }
+  //   fs.writeFile('./keyfile.json', `User: ${user} + Token: ${token} + RefreshToken: ${refreshToken}`,{}, (err)=>{
+  //     if(err) throw 'Error write' + err
+  //     fs.close(fd, ()=>{console.log("Write token success on keyfile.json")})
+  //   })
+  // })
   res.json(response)
 })
 
